@@ -1,0 +1,4 @@
+description: 'Business-tools operator: authorized Confluence, Tempo and other MCP
+  updates; resolves exact targets, avoids duplicates, verifies writes and returns
+  audit receipts.'
+description_auto: false

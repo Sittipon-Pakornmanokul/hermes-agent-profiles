@@ -1,0 +1,4 @@
+description: 'Main orchestrator: plans, owns requirements and handoffs, delegates
+  implementation to coder, review to code-reviewer, UX to ux-ui/ux-ui-critic, business
+  ops to mcp-ops; verifies results.'
+description_auto: false

@@ -1,0 +1,88 @@
+--- a/tools/file_operations_search.py
++++ b/tools/file_operations_search.py
+@@ -18,6 +18,15 @@
+ from agent.search_policy import SEARCH_PRUNE_DIR_NAMES
+ from tools import interrupt as tool_interrupt
+ from tools.file_operations_common import ExecuteResult, SearchMatch, SearchResult
++
++
++def _quote_search_pattern(pattern: str) -> str:
++    """Quote regex/glob data without Windows filesystem path normalization."""
++    # Adjacent quoted fragments keep Git Bash's Windows argv parser from
++    # collapsing pairs of backslashes before bash evaluates the command.
++    escaped = pattern.replace("'", "'\"'\"'").replace("\\", "\\''")
++    return "'" + escaped + "'"
++
+ 
+ _MACOS_TCC_PROTECTED_HOME_DIRS = (
+     "Desktop", "Documents", "Downloads", "Library", "Movies", "Music", "Pictures",
+@@ -585,7 +594,7 @@
+             return None
+         rg = self._quote_executable(rg_executable)
+         has_meta = bool(re.search(r"[.\[\](){}?*+^$\\|]", pattern))
+-        glob_expr = f" --glob {self._escape_shell_arg(file_glob)}" if file_glob else ""
++        glob_expr = f" --glob {_quote_search_pattern(file_glob)}" if file_glob else ""
+         for flags, template in self._ZERO_MATCH_PROBES:
+             if flags == "-F" and not has_meta:
+                 continue
+@@ -596,7 +605,7 @@
+             else:
+                 glob_expr_probe = glob_expr
+             probe_words = [rg, flags, "--count-matches", glob_expr_probe,
+-                           self._escape_shell_arg(pattern), self._escape_native_tool_arg(path)]
++                           _quote_search_pattern(pattern), self._escape_native_tool_arg(path)]
+             probe = self._run_rg_bounded(probe_words, 50, timeout=30)
+             total, per_file = 0, []
+             for line in (probe.stdout or "").strip().splitlines():
+@@ -691,7 +700,7 @@
+         protected_prune = f" {self._prune_expr(protected_paths)} -o" if protected_paths else ""
+         fetch_limit = offset + limit + 1
+         base = (f"find {' '.join(q_roots)}{protected_prune}{hidden_prune} -type f "
+-                f"! -name '.*' -name {self._escape_shell_arg(search_pattern)}")
++                f"! -name '.*' -name {_quote_search_pattern(search_pattern)}")
+         if order == "modified":
+             cmd = "set -o pipefail; " + base + f" -printf '%T@ %p\\n' 2>/dev/null | sort -rn | head -n {fetch_limit}"
+         else:
+@@ -775,7 +784,7 @@
+         root_args = " ".join(self._escape_native_tool_arg(root) for root in command_roots)
+         cd_prefix = f"cd {self._escape_shell_arg(scoped_common)} && " if scoped_common else ""
+         # ``--`` terminates options so a dash-prefixed root is never parsed as a flag.
+-        rg_cmd = (f"{rg} --files{sort_arg} -g {self._escape_shell_arg(glob_pattern)}"
++        rg_cmd = (f"{rg} --files{sort_arg} -g {_quote_search_pattern(glob_pattern)}"
+                   f"{exclusion_args} -- {root_args}")
+         result = self._run_rg_bounded([rg_cmd], fetch_limit, timeout=60, native_ok=not scoped_common,
+                                       shell_prefix=f"set -o pipefail; {cd_prefix}")
+@@ -867,10 +876,10 @@
+             cmd_parts.extend(["-C", str(context)])
+         cmd_parts.extend(self._rg_exclusion_globs(path))
+         if file_glob:
+-            cmd_parts.extend(["--glob", self._escape_shell_arg(file_glob)])
++            cmd_parts.extend(["--glob", _quote_search_pattern(file_glob)])
+         if output_mode in _OUTPUT_MODE_FLAGS:
+             cmd_parts.append(_OUTPUT_MODE_FLAGS[output_mode])
+-        cmd_parts.append(self._escape_shell_arg(pattern))
++        cmd_parts.append(_quote_search_pattern(pattern))
+         # rg is a native Windows binary (winget/cargo/choco): needs C:/... not MSYS /c/...
+         cmd_parts.append(self._escape_native_tool_arg(path))
+         ml_note = (
+@@ -886,10 +895,10 @@
+         if context > 0:
+             parts.extend(["-C", str(context)])
+         if file_glob:
+-            parts.extend(["--include", self._escape_shell_arg(file_glob)])
++            parts.extend(["--include", _quote_search_pattern(file_glob)])
+         if output_mode in _OUTPUT_MODE_FLAGS:
+             parts.append(_OUTPUT_MODE_FLAGS[output_mode])
+-        parts.append(self._escape_shell_arg(pattern))
++        parts.append(_quote_search_pattern(pattern))
+         return parts
+ 
+     def _search_with_grep(self, pattern: str, path: str, file_glob: Optional[str],
+@@ -933,6 +942,6 @@
+             "-type f",
+         ]
+         if file_glob:
+-            find_parts.extend(["-name", self._escape_shell_arg(file_glob)])
++            find_parts.extend(["-name", _quote_search_pattern(file_glob)])
+         find_parts.extend(["-exec", *grep_parts, "{}", "+", "2>/dev/null"])
+         return self._run_search_pipeline(find_parts, output_mode, limit, offset, context, line_cap=True)

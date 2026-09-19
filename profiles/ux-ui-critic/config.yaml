@@ -1,0 +1,159 @@
+model:
+  default: z-ai/glm-5.3-flash
+  provider: openrouter
+  base_url: https://openrouter.ai/api/v1
+  api_mode: chat_completions
+_config_version: 45
+agent:
+  max_turns: 30
+  reasoning_effort: medium
+auxiliary:
+  vision:
+    provider: openrouter
+    model: z-ai/glm-5.3-flash
+    extra_body:
+      provider:
+        zdr: true
+        data_collection: deny
+        sort: price
+  title_generation:
+    provider: openrouter
+    model: z-ai/glm-5.3-flash
+    extra_body:
+      provider:
+        zdr: true
+        data_collection: deny
+        sort: price
+    enabled: false
+  background_review:
+    enabled: false
+    provider: openrouter
+    model: z-ai/glm-5.3-flash
+    extra_body:
+      provider:
+        zdr: true
+        data_collection: deny
+        sort: price
+  compression:
+    provider: openrouter
+    model: z-ai/glm-5.3-flash
+    extra_body:
+      provider:
+        zdr: true
+        data_collection: deny
+        sort: price
+  skills_hub:
+    provider: openrouter
+    model: z-ai/glm-5.3-flash
+    extra_body:
+      provider:
+        zdr: true
+        data_collection: deny
+        sort: price
+  approval:
+    provider: openrouter
+    model: z-ai/glm-5.3-flash
+    extra_body:
+      provider:
+        zdr: true
+        data_collection: deny
+        sort: price
+  mcp:
+    provider: openrouter
+    model: z-ai/glm-5.3-flash
+    extra_body:
+      provider:
+        zdr: true
+        data_collection: deny
+        sort: price
+  memory_query_rewrite:
+    provider: openrouter
+    model: z-ai/glm-5.3-flash
+    extra_body:
+      provider:
+        zdr: true
+        data_collection: deny
+        sort: price
+  tts_audio_tags:
+    provider: openrouter
+    model: z-ai/glm-5.3-flash
+    extra_body:
+      provider:
+        zdr: true
+        data_collection: deny
+        sort: price
+  triage_specifier:
+    provider: openrouter
+    model: z-ai/glm-5.3-flash
+    extra_body:
+      provider:
+        zdr: true
+        data_collection: deny
+        sort: price
+  kanban_decomposer:
+    provider: openrouter
+    model: z-ai/glm-5.3-flash
+    extra_body:
+      provider:
+        zdr: true
+        data_collection: deny
+        sort: price
+  profile_describer:
+    provider: openrouter
+    model: z-ai/glm-5.3-flash
+    extra_body:
+      provider:
+        zdr: true
+        data_collection: deny
+        sort: price
+  goal_judge:
+    provider: openrouter
+    model: z-ai/glm-5.3-flash
+    extra_body:
+      provider:
+        zdr: true
+        data_collection: deny
+        sort: price
+  curator:
+    provider: openrouter
+    model: z-ai/glm-5.3-flash
+    extra_body:
+      provider:
+        zdr: true
+        data_collection: deny
+        sort: price
+  monitor:
+    provider: openrouter
+    model: z-ai/glm-5.3-flash
+    extra_body:
+      provider:
+        zdr: true
+        data_collection: deny
+        sort: price
+  openrouter_model: z-ai/glm-5.3-flash
+  web_extract:
+    provider: openrouter
+    model: z-ai/glm-5.3-flash
+    extra_body:
+      provider:
+        zdr: true
+        data_collection: deny
+        sort: price
+curator:
+  enabled: false
+web:
+  search_backend: exa
+  extract_backend: exa
+  keyless_rescue: false
+approvals:
+  mode: manual
+  single_query_mode: deny
+  cron_mode: deny
+  unattended_mode: deny
+  mcp_reload_confirm: true
+  destructive_slash_confirm: true
+delegation:
+  subagent_auto_approve: false
+provider_routing:
+  sort: price
+  data_collection: deny
