@@ -5,7 +5,7 @@ model:
   api_mode: chat_completions
 _config_version: 45
 agent:
-  max_turns: 30
+  max_turns: 60
   reasoning_effort: medium
 auxiliary:
   vision:

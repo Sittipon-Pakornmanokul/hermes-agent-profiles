@@ -16,6 +16,8 @@ Delegate implementation to a worker profile, then verify it yourself and with an
 
 ## Verify before you believe
 - Never relay a worker's summary as fact: rerun the suite, run the CLI end-to-end yourself, inspect artifacts (records, logs, workspace bytes).
+- Take VCS snapshots only **between** rounds. Committing while a worker is mid-edit captures partial state: the round's diff becomes unrecoverable and the worker's "it was broken when I started" claims stop being checkable. Commit after the round is verified, never during.
+- "No network calls" in a brief is not enough: a planted fake key in the reviewer's scratch env still passes a pre-request credential gate and dials real endpoints. Tell reviewers to unset the gate variable too, and treat any live request as an incident to disclose even when only a fake key was spent.
 - For pipelines with a decision/execution binding, check chain of custody programmatically: every execution references a persisted decision, hashes match, no unmatched intents.
 - Spawn a fresh round for leftovers instead of editing worker code yourself; keep one writer per file.
 
@@ -27,6 +29,8 @@ Delegate implementation to a worker profile, then verify it yourself and with an
 ## Load-bearing tests
 - A test that still passes with its guard neutralised is a defect even when the guard works: rewrite so only that guard can reject (put the trigger input where no other validation fires first).
 - Verify the fix with your own mutant copy: copy the tree, neutralise the exact guard line, assert the test now fails, restore.
+- Harness shape that survives repetition: assert the mutation applies exactly once (count the match before substituting) so a drifted substring fails loudly instead of silently testing nothing; run only the matching test; restore from the pristine copy and `cmp` byte-for-byte rather than trusting a re-run; keep every mutant in a scratch copy outside the repo, since a half-restored tree gives false confidence.
+- Defence in depth defeats single mutants: when two independent guards cover the same case, each one alone still passes its test — remove **both** before calling a test decorative, and expect failure only then.
 - Prefer a targeted mutant check over another full review round when the change is test/doc-only.
 
 ## Bounded repair rounds

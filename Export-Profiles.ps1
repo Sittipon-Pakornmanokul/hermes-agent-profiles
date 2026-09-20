@@ -1,10 +1,20 @@
 param(
-    [string]$Source = (Join-Path $env:LOCALAPPDATA 'hermes'),
+    [string]$Source = '',
     [string]$Destination = (Get-Location).Path,
     [string]$Python = '',
     [string]$Repo = ''
 )
 $ErrorActionPreference = 'Stop'
+if (-not $Source) {
+    $Source = Join-Path $env:LOCALAPPDATA 'hermes'
+    if ($env:HERMES_HOME) {
+        $Source = [Environment]::ExpandEnvironmentVariables($env:HERMES_HOME)
+        if ($Source.StartsWith('~')) { $Source = Join-Path $env:USERPROFILE $Source.Substring(1).TrimStart('\', '/') }
+        $Source = [IO.Path]::GetFullPath($Source)
+        $profileParent = Split-Path -Parent $Source
+        if ((Split-Path -Leaf $profileParent) -eq 'profiles') { $Source = Split-Path -Parent $profileParent }
+    }
+}
 if (-not $Repo) { $Repo = Join-Path $Source 'hermes-agent' }
 if (-not $Python) {
     foreach ($relative in @('venv\Scripts\python.exe', '.venv\Scripts\python.exe')) {

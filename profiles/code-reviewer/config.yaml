@@ -1,11 +1,11 @@
 model:
-  default: z-ai/glm-5.3
+  default: z-ai/glm-5.3-flash
   provider: openrouter
   base_url: https://openrouter.ai/api/v1
   api_mode: chat_completions
 agent:
-  max_turns: 30
-  reasoning_effort: low
+  max_turns: 90
+  reasoning_effort: medium
 web:
   search_backend: exa
   extract_backend: exa
@@ -13,7 +13,7 @@ web:
 auxiliary:
   vision:
     provider: openrouter
-    model: z-ai/glm-5.3-flash
+    model: auto
     extra_body:
       provider:
         zdr: true
@@ -21,7 +21,7 @@ auxiliary:
         sort: price
   compression:
     provider: openrouter
-    model: z-ai/glm-5.3-flash
+    model: auto
     extra_body:
       provider:
         zdr: true
@@ -29,7 +29,7 @@ auxiliary:
         sort: price
   skills_hub:
     provider: openrouter
-    model: z-ai/glm-5.3-flash
+    model: auto
     extra_body:
       provider:
         zdr: true
@@ -37,7 +37,7 @@ auxiliary:
         sort: price
   approval:
     provider: openrouter
-    model: z-ai/glm-5.3-flash
+    model: auto
     extra_body:
       provider:
         zdr: true
@@ -45,7 +45,7 @@ auxiliary:
         sort: price
   mcp:
     provider: openrouter
-    model: z-ai/glm-5.3-flash
+    model: auto
     extra_body:
       provider:
         zdr: true
@@ -53,7 +53,7 @@ auxiliary:
         sort: price
   title_generation:
     provider: openrouter
-    model: z-ai/glm-5.3-flash
+    model: auto
     extra_body:
       provider:
         zdr: true
@@ -61,7 +61,7 @@ auxiliary:
         sort: price
   memory_query_rewrite:
     provider: openrouter
-    model: z-ai/glm-5.3-flash
+    model: auto
     extra_body:
       provider:
         zdr: true
@@ -69,7 +69,7 @@ auxiliary:
         sort: price
   tts_audio_tags:
     provider: openrouter
-    model: z-ai/glm-5.3-flash
+    model: auto
     extra_body:
       provider:
         zdr: true
@@ -77,7 +77,7 @@ auxiliary:
         sort: price
   triage_specifier:
     provider: openrouter
-    model: z-ai/glm-5.3-flash
+    model: auto
     extra_body:
       provider:
         zdr: true
@@ -85,7 +85,7 @@ auxiliary:
         sort: price
   kanban_decomposer:
     provider: openrouter
-    model: z-ai/glm-5.3-flash
+    model: auto
     extra_body:
       provider:
         zdr: true
@@ -93,7 +93,7 @@ auxiliary:
         sort: price
   profile_describer:
     provider: openrouter
-    model: z-ai/glm-5.3-flash
+    model: auto
     extra_body:
       provider:
         zdr: true
@@ -101,7 +101,7 @@ auxiliary:
         sort: price
   goal_judge:
     provider: openrouter
-    model: z-ai/glm-5.3-flash
+    model: auto
     extra_body:
       provider:
         zdr: true
@@ -109,7 +109,7 @@ auxiliary:
         sort: price
   curator:
     provider: openrouter
-    model: z-ai/glm-5.3-flash
+    model: auto
     extra_body:
       provider:
         zdr: true
@@ -117,7 +117,7 @@ auxiliary:
         sort: price
   monitor:
     provider: openrouter
-    model: z-ai/glm-5.3-flash
+    model: auto
     extra_body:
       provider:
         zdr: true
@@ -126,7 +126,7 @@ auxiliary:
   background_review:
     enabled: false
     provider: openrouter
-    model: z-ai/glm-5.3-flash
+    model: auto
     extra_body:
       provider:
         zdr: true
@@ -135,7 +135,7 @@ auxiliary:
   openrouter_model: z-ai/glm-5.3-flash
   web_extract:
     provider: openrouter
-    model: z-ai/glm-5.3-flash
+    model: auto
     extra_body:
       provider:
         zdr: true

@@ -16,7 +16,7 @@
  
  _MACOS_TCC_PROTECTED_HOME_DIRS = (
      "Desktop", "Documents", "Downloads", "Library", "Movies", "Music", "Pictures",
-@@ -585,7 +594,7 @@
+@@ -598,7 +607,7 @@
              return None
          rg = self._quote_executable(rg_executable)
          has_meta = bool(re.search(r"[.\[\](){}?*+^$\\|]", pattern))
@@ -25,7 +25,7 @@
          for flags, template in self._ZERO_MATCH_PROBES:
              if flags == "-F" and not has_meta:
                  continue
-@@ -596,7 +605,7 @@
+@@ -609,7 +618,7 @@
              else:
                  glob_expr_probe = glob_expr
              probe_words = [rg, flags, "--count-matches", glob_expr_probe,
@@ -34,7 +34,7 @@
              probe = self._run_rg_bounded(probe_words, 50, timeout=30)
              total, per_file = 0, []
              for line in (probe.stdout or "").strip().splitlines():
-@@ -691,7 +700,7 @@
+@@ -703,7 +712,7 @@
          protected_prune = f" {self._prune_expr(protected_paths)} -o" if protected_paths else ""
          fetch_limit = offset + limit + 1
          base = (f"find {' '.join(q_roots)}{protected_prune}{hidden_prune} -type f "
@@ -43,7 +43,7 @@
          if order == "modified":
              cmd = "set -o pipefail; " + base + f" -printf '%T@ %p\\n' 2>/dev/null | sort -rn | head -n {fetch_limit}"
          else:
-@@ -775,7 +784,7 @@
+@@ -787,7 +796,7 @@
          root_args = " ".join(self._escape_native_tool_arg(root) for root in command_roots)
          cd_prefix = f"cd {self._escape_shell_arg(scoped_common)} && " if scoped_common else ""
          # ``--`` terminates options so a dash-prefixed root is never parsed as a flag.
@@ -52,7 +52,7 @@
                    f"{exclusion_args} -- {root_args}")
          result = self._run_rg_bounded([rg_cmd], fetch_limit, timeout=60, native_ok=not scoped_common,
                                        shell_prefix=f"set -o pipefail; {cd_prefix}")
-@@ -867,10 +876,10 @@
+@@ -879,10 +888,10 @@
              cmd_parts.extend(["-C", str(context)])
          cmd_parts.extend(self._rg_exclusion_globs(path))
          if file_glob:
@@ -65,7 +65,7 @@
          # rg is a native Windows binary (winget/cargo/choco): needs C:/... not MSYS /c/...
          cmd_parts.append(self._escape_native_tool_arg(path))
          ml_note = (
-@@ -886,10 +895,10 @@
+@@ -898,10 +907,10 @@
          if context > 0:
              parts.extend(["-C", str(context)])
          if file_glob:
@@ -78,9 +78,9 @@
          return parts
  
      def _search_with_grep(self, pattern: str, path: str, file_glob: Optional[str],
-@@ -933,6 +942,6 @@
-             "-type f",
-         ]
+@@ -946,6 +955,6 @@
+             find_parts.extend([self._prune_expr(protected_paths), "-o"])
+         find_parts.extend([self._hidden_prune_expr([q_root]), "-o", "-type f"])
          if file_glob:
 -            find_parts.extend(["-name", self._escape_shell_arg(file_glob)])
 +            find_parts.extend(["-name", _quote_search_pattern(file_glob)])

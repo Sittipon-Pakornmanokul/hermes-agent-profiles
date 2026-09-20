@@ -2,7 +2,12 @@
 # macOS / POSIX launcher; does not activate or change the caller's environment.
 set -euo pipefail
 bundle_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-source_dir="${HOME}/.hermes"
+source_dir="${HERMES_HOME:-${HOME}/.hermes}"
+if [[ "$source_dir" == '~/'* ]]; then source_dir="${HOME}/${source_dir:2}"; fi
+source_dir="${source_dir%/}"
+if [[ "$(basename -- "$(dirname -- "$source_dir")")" == profiles ]]; then
+  source_dir="$(dirname -- "$(dirname -- "$source_dir")")"
+fi
 output_dir="${PWD}"
 repo_dir=""
 python_bin=""
