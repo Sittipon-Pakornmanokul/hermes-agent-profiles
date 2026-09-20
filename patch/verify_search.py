@@ -10,7 +10,10 @@ from unittest.mock import patch
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--repo', type=Path, required=True)
 parser.add_argument('--trace', action='store_true')
+parser.add_argument('--candidate', type=Path, help='Verify a staged search module without installing it')
 args = parser.parse_args()
+if args.candidate:
+    args.candidate = args.candidate.resolve(strict=True)
 ROOT = args.repo.expanduser().resolve(strict=True)
 os.chdir(ROOT)
 sys.path.insert(0, str(ROOT))
@@ -18,6 +21,12 @@ sys.stdout.reconfigure(encoding='utf-8')
 
 with tempfile.TemporaryDirectory(prefix='hermes-search-check-') as temp:
     os.environ['HERMES_HOME'] = str(Path(temp) / 'home')
+    if args.candidate:
+        import importlib.util
+        spec = importlib.util.spec_from_file_location('tools.file_operations_search', args.candidate)
+        module = importlib.util.module_from_spec(spec)
+        sys.modules[spec.name] = module
+        spec.loader.exec_module(module)
     from tools.environments.local import LocalEnvironment
     from tools.file_operations import ShellFileOperations
     from tools import file_tools
@@ -72,5 +81,24 @@ with tempfile.TemporaryDirectory(prefix='hermes-search-check-') as temp:
             'pattern': '*.py', 'target': 'files', 'path': str(folder)
         }, task_id='search-regression'))
         assert result.get('files') and not result.get('error'), result
+        glob_source = folder / 'literal[1].py'
+        glob_source.write_text('globmarker\n', encoding='utf-8')
+        for engine in ['rg', 'grep']:
+            original_has = ops._has_command
+            with patch.object(ops, '_has_command', side_effect=lambda name: False if engine == 'grep' and name == 'rg' else original_has(name)):
+                result = json.loads(registry.dispatch('search_files', {
+                    'pattern': 'globmarker', 'path': str(folder), 'file_glob': r'literal\[1\].py'
+                }, task_id='search-glob-regression'))
+                passed = [m['line'] for m in result.get('matches', [])] == [1] and not result.get('error')
+                print(json.dumps({'engine': engine, 'escaped_content_glob': True, 'pass': passed, 'result': result}))
+                if not passed:
+                    failures.append((engine, 'escaped content glob'))
+                result = json.loads(registry.dispatch('search_files', {
+                    'pattern': r'literal\[1\].py', 'target': 'files', 'path': str(folder)
+                }, task_id='search-glob-regression'))
+                passed = len(result.get('files', [])) == 1 and 'literal[1].py' in result['files'][0] and not result.get('error')
+                print(json.dumps({'engine': engine, 'escaped_filename_glob': True, 'pass': passed, 'result': result}))
+                if not passed:
+                    failures.append((engine, 'escaped filename glob'))
     print(f'FAILED: {len(failures)} checks' if failures else 'PASS: all search checks')
     sys.exit(bool(failures))

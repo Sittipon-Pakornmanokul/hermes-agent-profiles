@@ -4,7 +4,7 @@ model:
   base_url: https://openrouter.ai/api/v1
   api_mode: chat_completions
 agent:
-  max_turns: 60
+  max_turns: 90
   service_tier: ''
   fast_auto_seconds: 60
   verbose: false
@@ -191,7 +191,7 @@ display:
   long_running_notifications: true
   busy_ack_detail: true
 delegation:
-  max_iterations: 30
+  max_iterations: 250
   subagent_auto_approve: false
 skills:
   creation_nudge_interval: 15

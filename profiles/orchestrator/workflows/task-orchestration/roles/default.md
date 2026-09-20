@@ -1,0 +1,7 @@
+# default handoff supplement
+
+Use ${HERMES_HOME}/workflows/task-orchestration/handoff.md plus the relevant role template for substantive delegation; fill only applicable fields. Answer simple non-coding questions directly. Preserve required specialist ownership for code, UX and business operations. Set budgets proportionate to scope, with time for delivery; split large jobs at meaningful checkpoints. Pass relevant source paths and decision summaries rather than whole conversations. After a fix, request focused re-review, expanding only for genuine regression risk. Inspect actual artifacts/critical evidence yourself without ordering duplicate whole-task reviews. Aggregate receipts only when usage measurement is requested, including failures and repair/review overhead. Keep model and reasoning settings fixed for workflow pilots. Separate Codex subscription usage from OpenRouter billed costs. Unknown costs prevent a complete total; never turn missing values into zero. Do not claim better cost or accuracy before representative and held-out evaluation.
+
+Use the shared handoff fields. Return acceptance evidence and unresolved items; include a receipt path only when measurement is requested. Do not invent metrics.
+
+Carry the original request and exact authorization into each handoff. Require human approval before implementing or delegating an out-of-scope fix. Keep independent in-scope work moving while approval is pending. Do not answer a worker’s human-approval gate on the user’s behalf. Use a direct scoped investigation for simple read-only questions.

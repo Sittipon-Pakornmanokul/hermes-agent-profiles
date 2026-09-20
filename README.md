@@ -42,13 +42,13 @@ These profiles use OpenRouter for models and Exa for web search/extraction. Set 
 
 ## Import profiles
 
-Install Hermes, clone this repository and open a terminal in the repository directory. Use Python 3.10 or newer.
+Install Hermes, clone this repository and open a terminal in the repository directory. Use Python 3.10 or newer with PyYAML (already included in the Hermes interpreter).
 
 Windows:
 
 ```powershell
-py -3 .\import_profiles.py --dry-run
-py -3 .\import_profiles.py
+.\Import-Profiles.ps1 -DryRun
+.\Import-Profiles.ps1
 ```
 
 macOS:
@@ -74,7 +74,7 @@ macOS:
 python3 ./import_profiles.py --profile coder
 ```
 
-Repeat `--profile` to select several roles. Existing profiles are never overwritten. The script checks for conflicts before copying. If a copy is interrupted, inspect the partially created profile before retrying.
+Repeat `--profile` to select several roles. Existing profiles require `--update` (Windows: `.\Import-Profiles.ps1 -Update -DryRun`, then `.\Import-Profiles.ps1 -Update`). The Windows launcher finds Hermes' Python automatically; use `-Python` for a custom interpreter. Preview with `python import_profiles.py --update --dry-run`, then apply with `python import_profiles.py --update`. Changed files are backed up under the destination Hermes home's `backups/profile-import-*` directory. Portable YAML settings overlay the destination's settings, retaining host-only keys omitted by export, such as connections and local shell configuration. Credentials and runtime data are not imported. Previously imported portable files removed from the bundle are removed on the next update; untracked files are preserved. The script checks all selected profiles before writing. A copy interruption is not a transaction rollback; inspect the printed destination and backup before retrying.
 
 Configure your own provider keys and privacy/routing settings through Hermes. Set up needed MCP connections and missing skill dependencies separately.
 
@@ -86,9 +86,9 @@ hermes -p orchestrator chat
 
 The profile flag is `-p` (or `--profile`), not `-u`: use the command above instead of `hermes -u orchestrator`.
 
-Workflow templates are inside each profile under `workflows/lean-execution`. `${HERMES_HOME}` in instructions means the active profile directory. Shell/backend settings use the recipient's installation defaults. Models and reasoning are preserved; adjust unavailable models through Hermes.
+Workflow templates are inside each profile under its named `workflows/<workflow-name>` folder (see below). `${HERMES_HOME}` in instructions means the active profile directory. Shell/backend settings use the recipient's installation defaults. Models and reasoning are preserved; adjust unavailable models through Hermes.
 
-Exported iteration limits are 60 for orchestrator/coder, 45 for ux-ui, and 30 for code-reviewer/research/mcp-ops/ux-ui-critic. These cap tool-calling iterations, not elapsed time or cost. Re-export applies these defaults; adjust `agent.max_turns` after export/import if needed. Models and reasoning are never changed by the workflow defaults. Small documentation and non-behavioral edits can stay with the orchestrator; substantive code still gets independent review.
+Each profile has its own `workflows/<workflow-name>/workflow.md`, linked from its SOUL.md. Workflows cover role-specific execution, handoffs, acceptance and decision-layer boundaries. They do not enable a decision engine. Models, reasoning and iteration limits come from the installed profile and are preserved during export; export no longer rewrites instructions or applies workflow defaults. For a deliberate workflow refresh, run `python update_profile_workflows.py --hermes-home /path/to/hermes-home`; it backs up changed workflow and SOUL files without changing config.yaml.
 
 If a non-interactive worker needs approval, let it exit and open the same profile interactively in the project directory with `hermes -p coder --resume SESSION_ID`, using its actual profile and session ID. The human answers any approval prompt there. If no ID is available, run `hermes -p coder chat` and supply its handoff and partial results. Do not run concurrent writers or repeatedly restart a blocked worker. Manual approvals remain enabled.
 
@@ -112,8 +112,23 @@ Both write directly into the current directory. If the scripts are elsewhere, in
 
 Export requires the source installation's Hermes Python and all seven specialist profiles. The Windows launcher detects `venv/Scripts/python.exe` or `.venv/Scripts/python.exe`. The macOS launcher detects `.venv/bin/python` or `venv/bin/python` under the Hermes source checkout.
 
-For a custom installation, use `-Source`, `-Repo` and `-Python` on Windows, or `--source`, `--repo` and `--python` on macOS. Re-export refreshes files managed by the export manifest and preserves `.git` and unrelated files. Unmanaged file conflicts stop the export. Share the folder through Git.
+For a custom installation, use `-Source`, `-Repo` and `-Python` on Windows, or `--source`, `--repo` and `--python` on macOS. Re-export reads each matching installed profile and its own workflow templates, then refreshes files managed by the export manifest and preserves `.git` and unrelated files. Obsolete manifest-managed profile files are removed only if they still match their previous checksum; local edits to obsolete files stop export. Workflows include Markdown instructions and empty JSON/YAML templates; runs, receipts, ledgers and reports are excluded. Import direction is this directory to Hermes; export direction is Hermes to this directory. Both Python commands honor Hermes root resolution, including a custom HERMES_HOME and active-profile homes. Unmanaged file conflicts stop the export. Share the folder through Git.
 
 ## Optional search patch
 
 Profile import does not apply or require the patch. Follow `patch/README.md` to check, apply and verify it separately. The original bug is Windows-specific; macOS compatibility is not native-tested. Do not force the patch onto an unsupported Hermes version.
+
+## Workflow names
+
+
+| Profile | Workflow | Folder |
+| --- | --- | --- |
+| `orchestrator` | Task Orchestration | `task-orchestration` |
+| `coder` | Implementation and Testing | `implementation-and-testing` |
+| `code-reviewer` | Independent Code Review | `independent-code-review` |
+| `research` | Evidence and Decision Research | `evidence-and-decision-research` |
+| `mcp-ops` | Verified Service Operations | `verified-service-operations` |
+| `ux-ui` | UX Design and Handoff | `ux-design-and-handoff` |
+| `ux-ui-critic` | UX and Accessibility Review | `ux-accessibility-review` |
+
+Historical run artifacts retain their original locations. Imports and exports carry each profile's named templates and current SOUL references.

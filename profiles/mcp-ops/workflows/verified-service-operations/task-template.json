@@ -1,0 +1,9 @@
+{
+  "task_id": null,
+  "cohort_id": null,
+  "acceptance_status": "pending",
+  "acceptance_evidence": [],
+  "accepted_by": null,
+  "run_ids": [],
+  "coverage_limits": []
+}

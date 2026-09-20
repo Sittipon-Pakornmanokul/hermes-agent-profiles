@@ -11,7 +11,7 @@ import sys
 import tempfile
 
 import yaml
-from workflow_defaults import tune_config, tune_soul, tune_workflow
+from profile_sync import default_home, workflow_file, checked_target, portable_file
 
 ROLES = ('orchestrator', 'coder', 'code-reviewer', 'research', 'mcp-ops', 'ux-ui', 'ux-ui-critic')
 # These sections contain portable behavior/settings; machine integrations stay out.
@@ -36,8 +36,8 @@ SKILLS = (
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    default_home = Path(os.environ.get('LOCALAPPDATA', str(Path.home() / 'AppData/Local'))) / 'hermes' if os.name == 'nt' else Path.home() / '.hermes'
-    parser.add_argument('--source', type=Path, default=default_home)
+    source_home = default_home()
+    parser.add_argument('--source', type=Path, default=source_home)
     parser.add_argument('--dest', type=Path, default=Path.cwd(), help='Export into this directory (default: current working directory)')
     parser.add_argument('--repo', type=Path, help='Hermes source checkout if not SOURCE/hermes-agent')
     args = parser.parse_args()
@@ -107,34 +107,34 @@ def main():
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text(clean_text(text), encoding='utf-8', newline='\n')
 
-        workflow = source / 'profiles/orchestrator/workflows/lean-execution'
-        templates = [workflow / 'handoff.md', workflow / 'measurement.md']
-        templates += sorted((workflow / 'roles').glob('*.md'))
         for name, home in homes:
-            config_path = home / 'config.yaml'
+            checked_target(source, home.relative_to(source))
+            config_path = checked_target(home, 'config.yaml')
             if not config_path.is_file():
                 raise SystemExit(f'Missing config for {name}; no completed export produced.')
             config = yaml.safe_load(config_path.read_text(encoding='utf-8')) or {}
-            shared = tune_config(scrub({k: v for k, v in config.items() if k in SECTIONS}), name)
+            shared = scrub({k: v for k, v in config.items() if k in SECTIONS})
             # Retain timing preferences, but do not export source-specific shells or containers.
             if isinstance(config.get('terminal'), dict):
                 shared['terminal'] = {k: v for k, v in config['terminal'].items() if k in {'timeout', 'lifetime_seconds'}}
             relative = Path('profiles') / name
             write(relative / 'config.yaml', yaml.safe_dump(shared, sort_keys=False, allow_unicode=True))
-            soul = home / 'SOUL.md'
+            soul = checked_target(home, 'SOUL.md')
             if soul.is_file():
-                write(relative / 'SOUL.md', tune_soul(soul.read_text(encoding='utf-8'), name))
-            metadata = home / 'profile.yaml'
+                write(relative / 'SOUL.md', soul.read_text(encoding='utf-8'))
+            metadata = checked_target(home, 'profile.yaml')
             if metadata.is_file():
                 meta = yaml.safe_load(metadata.read_text(encoding='utf-8')) or {}
                 write(relative / 'profile.yaml', yaml.safe_dump(scrub({k:meta[k] for k in ('description', 'description_auto') if k in meta}), sort_keys=False))
-            for template in templates:
-                if template.is_file() and not template.is_symlink():
-                    workflow_relative = template.relative_to(workflow)
-                    write(relative / 'workflows/lean-execution' / workflow_relative, tune_workflow(workflow_relative.as_posix(), template.read_text(encoding='utf-8')))
+            workflow = checked_target(home, 'workflows')
+            for template in sorted(workflow.rglob('*')):
+                workflow_relative = template.relative_to(workflow)
+                checked_target(workflow, workflow_relative)
+                if template.is_file() and workflow_file(workflow_relative):
+                    write(relative / 'workflows' / workflow_relative, template.read_text(encoding='utf-8'))
             skill_root = home / 'skills'
             for skill in SKILLS:
-                root = skill_root / skill
+                root = checked_target(skill_root, skill)
                 if not (root / 'SKILL.md').is_file():
                     continue
                 for path in root.rglob('*'):
@@ -146,7 +146,7 @@ def main():
                         continue
                     write(relative / 'skills' / skill / path.relative_to(root), path.read_text(encoding='utf-8'))
 
-        for filename in ('export_profiles.py', 'workflow_defaults.py', 'import_profiles.py', 'Export-Profiles.ps1', 'export-profiles.sh', 'README.md'):
+        for filename in ('export_profiles.py', 'workflow_defaults.py', 'profile_sync.py', 'update_profile_workflows.py', 'import_profiles.py', 'Import-Profiles.ps1', 'Export-Profiles.ps1', 'export-profiles.sh', 'README.md'):
             (stage / filename).write_text((asset_root / filename).read_text(encoding='utf-8'), encoding='utf-8', newline='\n')
         (stage / 'export-profiles.sh').chmod(0o755)
         for filename in ('apply_patch.py', 'verify_search.py', 'search-patterns.patch', 'README.md'):
@@ -169,7 +169,7 @@ def main():
             'profile_count':len(ROLES), 'portable_settings_only':True,
             'profile_targets':['Windows', 'macOS'], 'native_macos_tested':False,
             'excluded':['.env', 'auth/OAuth files', 'memory', 'sessions', 'databases', 'logs', 'caches', 'workflow runs/reports', 'MCP server connections', 'gateway routes', 'plugin state/code', 'machine paths/mounts', 'command allowlists'],
-            'notes':['Only allowlisted skill Markdown instructions are included; install missing skill dependencies separately.', 'Workflow templates copied to each profile so HERMES_HOME-relative references work.', 'Terminal backend/shell/container settings omitted for portability; models and reasoning preserved.'],
+            'notes':['Only allowlisted skill Markdown instructions are included; install missing skill dependencies separately.', 'Each profile exports its own workflow templates; runtime history is excluded.', 'Terminal backend/shell/container settings omitted for portability; models and reasoning preserved.'],
             'files':{str(p.relative_to(stage)).replace('\\','/'):hashlib.sha256(p.read_bytes()).hexdigest() for p in files},
         }
         write('MANIFEST.json', json.dumps(manifest, indent=2))
@@ -177,7 +177,7 @@ def main():
         output_files = sorted(p for p in stage.rglob('*') if p.is_file())
         for item in output_files:
             relative = item.relative_to(stage)
-            target = dest / relative
+            target = checked_target(dest, relative)
             if target.is_symlink() or not target.resolve().is_relative_to(dest):
                 raise SystemExit(f'Refusing linked/outside export target: {relative}')
             if target.exists():
@@ -185,11 +185,28 @@ def main():
                     raise SystemExit(f'Export file collides with a directory: {relative}')
                 if relative.as_posix() not in managed and target.read_bytes() != item.read_bytes():
                     raise SystemExit(f'Unmanaged file would be overwritten: {relative}')
+        wanted = {p.relative_to(stage).as_posix() for p in output_files}
+        stale = []
+        for item in managed - wanted:
+            if not item.startswith('profiles/'):
+                continue
+            old = checked_target(dest, item)
+            parts = Path(item).parts
+            if len(parts) < 3 or parts[1] not in ROLES or not portable_file(Path(*parts[2:])):
+                raise SystemExit(f'Invalid managed profile path: {item}')
+            if old.is_file():
+                # Do not silently discard edits to files removed from the source.
+                expected = previous['files'].get(item)
+                if hashlib.sha256(old.read_bytes()).hexdigest() != expected:
+                    raise SystemExit(f'Obsolete managed file has local edits: {item}')
+                stale.append(old)
         dest.mkdir(exist_ok=True)
         for item in output_files:
             target = dest / item.relative_to(stage)
             target.parent.mkdir(parents=True, exist_ok=True)
             os.replace(item, target)
+        for old in stale:
+            old.unlink()
     print(f'Exported {len(ROLES)} sanitized profile templates to {dest}')
     print('Ready to share through Git. No memory, sessions, credentials or run history included.')
 

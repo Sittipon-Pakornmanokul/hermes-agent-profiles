@@ -48,6 +48,27 @@ web:
 Blunt instruments: `web.cache_ttl_minutes: 1` (min) or
 `web.cache_enabled: false` disables both caches entirely.
 
+### `hermes update` crashed mid-run (Windows post-swap handoff)
+`hermes update` started from inside a running session can abort with an ImportError
+from `hermes_cli/update_handoff.py` (e.g. `_windows_shim_holder_pid` from
+`main_install_repair`): the pre-pull interpreter runs mixed-version code after the
+git swap. The code swap itself is already applied — the run leaves its hand-off
+payload at `<home>/logs/update_receipts/post_swap_<pid>.json`. Finish the update
+by running the designed continuation (resumes the same receipt, runs the tail:
+deps, node/web/desktop, maintenance, config migration, fleet restart,
+verification):
+
+```bash
+cd <install-dir>/hermes-agent
+HERMES_UPDATE_POST_SWAP=1 HERMES_UPDATE_REEXEC=1 \
+  venv/Scripts/python.exe -m hermes_cli.main update --yes \
+  --post-swap '<home>/logs/update_receipts/post_swap_<pid>.json'
+```
+
+Verify: `<home>/logs/update_receipts/latest.json` → `"outcome": "success"`, and
+no `.update-incomplete` / `.lazy-refresh-incomplete` files next to the venv.
+(`--yes` accepts config-migration/stash prompts; drop it to answer manually.)
+
 ### Skills not showing
 1. `hermes skills list` — verify installed
 2. `hermes skills config` — check platform enablement
