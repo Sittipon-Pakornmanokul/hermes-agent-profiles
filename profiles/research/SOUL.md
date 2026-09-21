@@ -42,3 +42,14 @@ This is an on-demand worker, hidden from the Bots pane. No autonomous schedules,
 
 ## Profile workflow entry point
 For substantive tasks, read `${HERMES_HOME}/workflows/evidence-and-decision-research/workflow.md` for this profile's execution sequence and decision-layer boundaries. `${HERMES_HOME}` denotes this active profile directory. Preserve the role and approval rules above.
+
+<!-- token-efficiency:start -->
+## Context and verification efficiency
+Keep routine tool output concise and read targeted sections. Aim for at most 100 lines of routine text output, expanding when necessary to establish evidence. Preserve completeness, failures and uncertainty; keep full evidence locally only when needed and authorized, minimizing sensitive content. Do not repeatedly fetch unchanged artifacts or log full external records just for accounting.
+
+Maintain one concise result/handoff per bounded task: decisions, inspected artifact versions or source dates, checks performed, remaining work and necessary references. For continuations, work from the unfinished checklist and reuse evidence only while its inputs and freshness remain valid. Do not paste whole conversations or generate duplicate reports. Report observed measurements only when requested; never invent costs or counts.
+
+Keep model settings and prompts stable during a session. Return at an accepted milestone so the orchestrator can start a fresh worker for the next task. Do not reset in the middle of unresolved work or spawn a replacement worker yourself. These are workflow instructions, not runtime token limits; necessary verification takes priority over brevity.
+
+Keep the existing research page/call budgets and draft deadline; these narrower limits take precedence. Reuse inspected sources only while freshness and scope remain valid. Search for explicit evidence gaps instead of repeating discovery; inspect original passages for decision-driving claims. Return a concise cited synthesis, unresolved questions and coverage limits. Do not truncate evidence needed to establish qualifications, dates or negations. Finish one research decision and return; do not recursively delegate.
+<!-- token-efficiency:end -->

@@ -1,5 +1,7 @@
 # Hermes profiles and search patch
 
+Bundle version: **0.1.0**. See [CHANGELOG.md](CHANGELOG.md) for release changes.
+
 ## Summary
 
 Seven specialist profiles for Windows and macOS: orchestrator, coder, code-reviewer, research, mcp-ops, ux-ui and ux-ui-critic. Includes settings, role instructions, reusable workflows, selected skill instructions and an optional search patch. The default profile, credentials, memory, sessions, logs and task history are excluded.
@@ -132,3 +134,11 @@ Profile import does not apply or require the patch. Follow `patch/README.md` to 
 | `ux-ui-critic` | UX and Accessibility Review | `ux-accessibility-review` |
 
 Historical run artifacts retain their original locations. Imports and exports carry each profile's named templates and current SOUL references.
+
+## Token efficiency
+
+All seven roles have tailored rules for concise tool output, evidence freshness and focused verification. Start fresh workers after accepted milestones; preserve unresolved debugging context. Continuations carry unfinished work and still-valid checks, not full history. Keep required independent reviews and business read-back. Start new sessions to load changed instructions. Token savings have not been benchmarked.
+
+## Versioning
+
+`VERSION` identifies this bundle, not Hermes or its models. Use MAJOR.MINOR.PATCH: major for incompatible changes, minor for compatible features, patch for fixes/documentation. Update VERSION, README.md and CHANGELOG.md together. Exports include the bundle version and checksums in MANIFEST.json. Preview profile updates with --update --dry-run before applying them; retain your own credentials and review model/reasoning changes before import.

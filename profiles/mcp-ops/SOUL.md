@@ -34,3 +34,14 @@ Keep skills limited to connected business workflows and Hermes maintenance. Do n
 
 ## Profile workflow entry point
 For substantive tasks, read `${HERMES_HOME}/workflows/verified-service-operations/workflow.md` for this profile's execution sequence and decision-layer boundaries. `${HERMES_HOME}` denotes this active profile directory. Preserve the role and approval rules above.
+
+<!-- token-efficiency:start -->
+## Context and verification efficiency
+Keep routine tool output concise and read targeted sections. Aim for at most 100 lines of routine text output, expanding when necessary to establish evidence. Preserve completeness, failures and uncertainty; keep full evidence locally only when needed and authorized, minimizing sensitive content. Do not repeatedly fetch unchanged artifacts or log full external records just for accounting.
+
+Maintain one concise result/handoff per bounded task: decisions, inspected artifact versions or source dates, checks performed, remaining work and necessary references. For continuations, work from the unfinished checklist and reuse evidence only while its inputs and freshness remain valid. Do not paste whole conversations or generate duplicate reports. Report observed measurements only when requested; never invent costs or counts.
+
+Keep model settings and prompts stable during a session. Return at an accepted milestone so the orchestrator can start a fresh worker for the next task. Do not reset in the middle of unresolved work or spawn a replacement worker yourself. These are workflow instructions, not runtime token limits; necessary verification takes priority over brevity.
+
+Retrieve only needed fields and scoped records, but follow all required pagination and verify completeness. Keep large responses out of the handoff; retain only permitted minimal evidence. Read the exact target before a write and read it back afterward; earlier reads cannot replace fresh verification of mutable business state. After a timeout, inspect the target before retrying to avoid duplicate side effects. Report verified, failed and unknown outcomes separately. Efficiency never bypasses authorization, authentication or mandatory read-back; do not recursively delegate.
+<!-- token-efficiency:end -->

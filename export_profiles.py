@@ -146,7 +146,7 @@ def main():
                         continue
                     write(relative / 'skills' / skill / path.relative_to(root), path.read_text(encoding='utf-8'))
 
-        for filename in ('export_profiles.py', 'workflow_defaults.py', 'profile_sync.py', 'update_profile_workflows.py', 'import_profiles.py', 'Import-Profiles.ps1', 'Export-Profiles.ps1', 'export-profiles.sh', 'README.md'):
+        for filename in ('export_profiles.py', 'workflow_defaults.py', 'profile_sync.py', 'update_profile_workflows.py', 'import_profiles.py', 'Import-Profiles.ps1', 'Export-Profiles.ps1', 'export-profiles.sh', 'README.md', 'VERSION', 'CHANGELOG.md', '.gitattributes'):
             (stage / filename).write_text((asset_root / filename).read_text(encoding='utf-8'), encoding='utf-8', newline='\n')
         (stage / 'export-profiles.sh').chmod(0o755)
         for filename in ('apply_patch.py', 'verify_search.py', 'search-patterns.patch', 'README.md'):
@@ -165,6 +165,7 @@ def main():
             if path.suffix == '.yaml':
                 yaml.safe_load(content)
         manifest = {
+            'bundle_version':(asset_root / 'VERSION').read_text(encoding='utf-8').strip(),
             'created_utc':datetime.now(timezone.utc).isoformat(),
             'profile_count':len(ROLES), 'portable_settings_only':True,
             'profile_targets':['Windows', 'macOS'], 'native_macos_tested':False,

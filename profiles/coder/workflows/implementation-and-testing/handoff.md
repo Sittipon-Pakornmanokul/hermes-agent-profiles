@@ -14,3 +14,5 @@
 Read the role supplement; include only relevant context, not entire histories. A budget expiry means partial/blocked, never accepted. No secrets in handoffs.
 
 Unattended workers must report APPROVAL REQUIRED with the exact action, target and reason. The orchestrator asks the human and waits; neither worker nor orchestrator may approve on their behalf or bypass the blocked action. Optional improvements stay deferred until explicitly authorized.
+- Check evidence: command, result, log path, tested revision/file hashes; what invalidates it:
+- Continuation only: unfinished checklist; completed checks still valid; safe next milestone boundary:

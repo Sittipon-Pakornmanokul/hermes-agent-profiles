@@ -39,3 +39,14 @@ Keep skills lean and role-specific; bundled reseeding is disabled. Load hermes-a
 
 ## Profile workflow entry point
 For substantive tasks, read `${HERMES_HOME}/workflows/ux-design-and-handoff/workflow.md` for this profile's execution sequence and decision-layer boundaries. `${HERMES_HOME}` denotes this active profile directory. Preserve the role and approval rules above.
+
+<!-- token-efficiency:start -->
+## Context and verification efficiency
+Keep routine tool output concise and read targeted sections. Aim for at most 100 lines of routine text output, expanding when necessary to establish evidence. Preserve completeness, failures and uncertainty; keep full evidence locally only when needed and authorized, minimizing sensitive content. Do not repeatedly fetch unchanged artifacts or log full external records just for accounting.
+
+Maintain one concise result/handoff per bounded task: decisions, inspected artifact versions or source dates, checks performed, remaining work and necessary references. For continuations, work from the unfinished checklist and reuse evidence only while its inputs and freshness remain valid. Do not paste whole conversations or generate duplicate reports. Report observed measurements only when requested; never invent costs or counts.
+
+Keep model settings and prompts stable during a session. Return at an accepted milestone so the orchestrator can start a fresh worker for the next task. Do not reset in the middle of unresolved work or spawn a replacement worker yourself. These are workflow instructions, not runtime token limits; necessary verification takes priority over brevity.
+
+Complete the core user journey before optional variants or polish. Reuse existing components and design decisions; inspect only relevant artifacts. Validate changed journeys and affected shared components, including responsive, accessibility and recovery behavior; run the required end-to-end checks before handoff. Keep one concise design specification with artifact paths and open decisions. Return at a bounded design milestone instead of extending into production implementation or recursively delegating.
+<!-- token-efficiency:end -->

@@ -35,3 +35,14 @@ Keep skills role-focused. Never expose credentials or expand task scope without 
 
 ## Profile workflow entry point
 For substantive tasks, read `${HERMES_HOME}/workflows/independent-code-review/workflow.md` for this profile's execution sequence and decision-layer boundaries. `${HERMES_HOME}` denotes this active profile directory. Preserve the role and approval rules above.
+
+<!-- token-efficiency:start -->
+## Context and verification efficiency
+Keep full command logs in the agreed local artifact directory; return exit status, totals and relevant failures. Prefer quiet test output and targeted file ranges. Aim for at most 100 lines of routine tool output, expanding when diagnosis requires it. Preserve exit codes when redirecting output; never hide failures or truncate the only copy of evidence. Avoid rewriting whole files merely to bypass noisy lint output; use supported focused edits and inspect the diff.
+
+During implementation, run affected tests after each logical change. Run required full suites and parity checks at the acceptance boundary; repeat them after relevant changes, new failure evidence or explicit project requirements, not because a continuation started. Record each check's command, result, log path and tested revision or affected-file hashes. Reuse evidence only while those inputs remain unchanged. Independent review still verifies consequential behavior.
+
+Keep one concise handoff/result per milestone: decisions, changed files, verified checks, remaining work and artifact paths. Update it rather than producing duplicate narratives. Do not paste full logs or conversation history. Keep prompts, skills and model settings stable within a session. No automatic compaction/reset solely to meet a token target; preserve unresolved debugging context. These are workflow instructions, not runtime token limits.
+
+Inspect the actual diff, acceptance criteria and affected callers first; expand only for concrete regression risk. Report actionable findings with file/line, impact and reproduction or supporting evidence, plus coverage limits. Do not request implementation changes for cosmetic preferences outside scope. In repair reviews, track finding IDs and relevant regressions; do not re-audit unchanged areas without new evidence.
+<!-- token-efficiency:end -->
