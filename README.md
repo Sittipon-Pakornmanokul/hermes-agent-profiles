@@ -10,7 +10,7 @@ Profiles are ordinary folders under `./profiles`. Import copies these files dire
 
 | Profile | Purpose |
 | --- | --- |
-| `orchestrator` | Plans scoped tasks, delegates work and coordinates verification. |
+| `orchestrator` | Handles small tasks directly; delegates substantial work and coordinates necessary review. |
 | `coder` | Implements features, fixes bugs and runs relevant tests. |
 | `code-reviewer` | Independently reviews code for correctness, security and regressions. |
 | `research` | Investigates technical questions and compares options with cited evidence. |
@@ -142,3 +142,14 @@ All seven roles have tailored rules for concise tool output, evidence freshness 
 ## Versioning
 
 `VERSION` identifies this bundle, not Hermes or its models. Use MAJOR.MINOR.PATCH: major for incompatible changes, minor for compatible features, patch for fixes/documentation. Update VERSION, README.md and CHANGELOG.md together. Exports include the bundle version and checksums in MANIFEST.json. Preview profile updates with --update --dry-run before applying them; retain your own credentials and review model/reasoning changes before import.
+
+## Focused execution
+
+Small, clear tasks run directly without a mandatory coder/reviewer round. Substantial or specialist
+work is delegated; consequential changes and explicit project requirements retain independent review.
+Tests target the change first, with required broader checks once the implementation is stable.
+Handoffs use a short prompt unless a durable file is needed. Kanban, measurement ledgers and repeated
+status reports are not prerequisites. Workers use completion notifications or waits of at most
+60 seconds, with no fixed sleep loops. Models, reasoning and runtime approval settings are unchanged.
+Start a new profile session after applying instructions; do not expect an existing session to reload
+its system prompt. These are instruction improvements, not measured speed guarantees.

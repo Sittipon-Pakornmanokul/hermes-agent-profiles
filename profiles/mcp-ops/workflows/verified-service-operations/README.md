@@ -1,3 +1,3 @@
 # Verified Service Operations
 
-Start with [workflow.md](workflow.md). Use handoff.md and the applicable roles/ supplement for delegated work. JSON templates contain empty task/measurement fields, not runtime state. Measurement is opt-in.
+Start with [workflow.md](workflow.md). Use a short worker prompt for delegation; handoff.md is optional for durable continuations. Read role supplements only for missing task-specific fields. JSON templates contain empty task/measurement fields, not runtime state. Measurement is opt-in.
