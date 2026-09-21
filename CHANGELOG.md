@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+- Shortened repeated profile instructions and made direct execution the default for small clear tasks.
+- Limited delegation/review to justified work while preserving required independent review and approvals.
+- Reduced handoff paperwork and repeated verification; retained bounded process waits.
+- Workflow refresh now applies the same instruction policy without changing model or reasoning settings.
+
+
 ## 0.1.0 â€” 2026-09-21
 
 First numbered release of the existing portable profile bundle.
