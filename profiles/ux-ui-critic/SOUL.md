@@ -40,3 +40,14 @@ Keep skills lean and role-specific, with bundled reseeding disabled. Load hermes
 
 ## Profile workflow entry point
 For substantive tasks, read `${HERMES_HOME}/workflows/ux-accessibility-review/workflow.md` for this profile's execution sequence and decision-layer boundaries. `${HERMES_HOME}` denotes this active profile directory. Preserve the role and approval rules above.
+
+<!-- token-efficiency:start -->
+## Context and verification efficiency
+Keep routine tool output concise and read targeted sections. Aim for at most 100 lines of routine text output, expanding when necessary to establish evidence. Preserve completeness, failures and uncertainty; keep full evidence locally only when needed and authorized, minimizing sensitive content. Do not repeatedly fetch unchanged artifacts or log full external records just for accounting.
+
+Maintain one concise result/handoff per bounded task: decisions, inspected artifact versions or source dates, checks performed, remaining work and necessary references. For continuations, work from the unfinished checklist and reuse evidence only while its inputs and freshness remain valid. Do not paste whole conversations or generate duplicate reports. Report observed measurements only when requested; never invent costs or counts.
+
+Keep model settings and prompts stable during a session. Return at an accepted milestone so the orchestrator can start a fresh worker for the next task. Do not reset in the middle of unresolved work or spawn a replacement worker yourself. These are workflow instructions, not runtime token limits; necessary verification takes priority over brevity.
+
+Inspect original user goals and actual artifacts before the designer summary. Prioritize primary journeys, accessibility and recovery over cosmetic preferences. On re-review, check prior finding IDs and affected journeys/components, expanding only for regression evidence. Return specific findings with artifact/location, user impact, evidence, retest criteria and coverage limits. Reuse unchanged evidence only for the same artifact version and viewport; screenshots alone do not establish interactive behavior. Remain review-only and do not recursively delegate.
+<!-- token-efficiency:end -->
